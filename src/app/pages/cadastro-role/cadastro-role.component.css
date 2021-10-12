@@ -1,0 +1,12 @@
+.cadastro-role-header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cadastro-role-container-menus {
+    display: flex;
+}
+
+.cadastro-role-funcoes p-button:first-of-type {
+    margin-right: 5px;
+}

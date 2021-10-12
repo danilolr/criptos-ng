@@ -1,0 +1,8 @@
+.cadastro-menu-header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cadastro-menu-funcoes p-button:first-of-type {
+    margin-right: 5px;
+}

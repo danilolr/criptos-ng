@@ -1,0 +1,46 @@
+#main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#topo {
+    background-color: blue;    
+    height: 80px;
+}
+
+#corpo {
+    display: flex;
+    overflow: hidden;
+    height: 100%;
+}
+
+#conteudo {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    /* margin-bottom: 20px; */
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+#conteudo app-lista-atendimento {
+    height: 100%;
+}
+
+#conteudo app-cadastro-refeicao {
+    height: 100%;
+}
+
+router-outlet {
+    display: none;
+}
+
+.ui-menuitem .ui-state-active {
+    background-color: #eaeaea !important;
+}
+
+.ui-panelmenu .ui-panelmenu-content .ui-menuitem .ui-menuitem-link:hover {
+    background-color: #ccc !important;
+}

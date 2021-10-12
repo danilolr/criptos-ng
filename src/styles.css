@@ -1,0 +1,79 @@
+/* You can add global styles to this file, and also import other style files */
+
+html {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    min-height: 100% !important;
+    height: 100%;
+    font-size: 14px;
+}
+
+body {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    min-height: 100% !important;
+    height: 100%;    
+}
+
+.align-conteudo-numerico {
+    text-align: right;
+}
+
+.align-conteudo-acoes {
+    text-align: center;
+}
+
+.align-conteudo-acoes > * {
+    margin: 0px 5px !important;
+}
+
+.header-tabela {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.container-botao-adicionar {
+    display: flex;
+    align-items: center;
+}
+
+.header-tabela h1 {
+    font-weight: 100;
+}
+
+.modal {
+    padding: 10px;
+}
+
+.input-field p {
+    margin-bottom: 5px;
+}
+
+.input-field > * {
+    width: 100%;
+}
+
+.input-field {
+    margin-bottom: 15px;
+}
+
+.container-acoes p-button {
+    margin-right: 5px;
+}
+
+.dropdown-full ::ng-deep .ui-dropdown {
+    width: 100% !important;
+}
+
+.container-adicionar {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.aviso-erro {
+    color: red;
+}

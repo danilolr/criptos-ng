@@ -1,0 +1,66 @@
+<div *ngIf="processando">Processando</div>
+<div id="r" style="display:none">
+    <p-tabView>
+        <p-tabPanel header="Resumo">
+            <p-table [value]="resultado" [autoLayout]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="3">Entrada</th>
+                        <th colspan="3">Saída</th>
+                        <th>Resultado</th>
+                    </tr>
+                    <tr>
+                        <th>Data Hora</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>Data Hora</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>%</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-c let-i="rowIndex">
+                    <tr>
+                        <td>{{c.entrada?.dataHora}}</td>
+                        <td>{{c.entrada?.tipo}}</td>
+                        <td>{{c.entrada?.valor}}</td>
+                        <td>{{c.saida?.dataHora}}</td>
+                        <td>{{c.saida?.tipo}}</td>
+                        <td>{{c.saida?.valor}}</td>
+                        <td>{{c.percResultado}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="Gráfico">
+            <div id="chat"></div>
+            <div id="chat2"></div>
+        </p-tabPanel>
+        <p-tabPanel header="Dados">
+            <p-table [value]="cotacoes" [autoLayout]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Data Hora</th>
+                        <th>Abertura</th>
+                        <th>Mínimo</th>
+                        <th>Máximo</th>
+                        <th>Fechamento</th>
+                        <th *ngFor="let i of indicadores">{{i.descricao}}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-c let-i="rowIndex">
+                    <tr>
+                        <td>{{c.dataHora}}</td>
+                        <td>{{c.open}}</td>
+                        <td>{{c.low}}</td>
+                        <td>{{c.high}}</td>
+                        <td>{{c.close}}</td>
+                        <td [ngClass]="c.indicador[0]>c.indicador[1] ? 'alta' : 'baixa'" *ngFor="let i of c.indicador">
+                            {{i}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+    </p-tabView>
+
+</div>

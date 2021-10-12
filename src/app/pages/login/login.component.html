@@ -1,0 +1,27 @@
+<div id="main">
+    <div class="corpo">
+        <p-card>
+            <div class="container">
+                <h2 class="app-name">Criptos</h2>
+                <div class="wrapper">
+                    <table>
+                        <tr>
+                            <td>Email :</td>
+                            <td><input type="text" pInputText [(ngModel)]="usuario" /></td>
+                        </tr>
+                        <tr>
+                            <td>Senha :</td>
+                            <td><input type="password" pInputText [(ngModel)]="senha" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="button-td">
+                                <p-button label="Entrar" (onClick)="entrar()"></p-button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </p-card>
+        <p-toast position="top-center"></p-toast>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="container-upload ">
+    <div class="container-drop">
+        <div (click)="fileInput.click()" [appDragDrop]="config.data.mimeType" class="drop" [ngClass]="{'drop-over': isFileOver || arquivo}" (onFileOver)="isFileOver=true" (onFileLeave)="isFileOver=false" 
+        (onFileDropped)="adicionarArquivo($event)">
+            <input hidden type="file" #fileInput [accept]="config.data.mimeType" (change)="adicionarArquivo($event.target.files)">
+            <i class="pi pi-cloud-upload"></i>
+            <p>{{arquivo ? arquivo.name : 'Insira um arquivo'}}</p>
+        </div>
+    </div>
+
+    <div class="footer-upload">
+        <button pButton icon="pi pi-times" label="Cancelar" (click)="fecharJanela()" class="ui-button-danger"></button>
+        <button pButton  icon="{{ isSalvando ? 'pi pi-spin pi-spinner' : 'pi pi-check' }}" label="Salvar" [disabled]="isSalvando || !arquivo" (click)="salvar()"></button>
+    </div>
+</div>
+
+<p-toast position="top-center"></p-toast>

@@ -1,0 +1,30 @@
+.personalizado.ui-toolbar {
+    color: white;
+    border: 0px;
+    border-radius: 0px;
+    display: flex;
+}
+
+.nav-brand {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 32px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img-container {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.selecao-escola {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}

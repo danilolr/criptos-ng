@@ -1,0 +1,78 @@
+<div class="header-tabela">
+    <h1>Roles</h1>
+</div>
+
+<p-table [value]="roles" [autoLayout]="true">
+    <ng-template pTemplate="caption">
+        <div class="cadastro-role-header">
+            <p-button label="Adicionar role" (click)="abrirModalInsercao()"></p-button>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Descrição</th>
+            <th>Role</th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-r>
+        <tr>
+            <td>{{r.descRole}}</td>
+            <td>{{r.role}}</td>
+            <td class="cadastro-role-funcoes">
+                <p-button icon="pi pi-pencil" label="Editar" (click)="abrirModalEdicao(r)"></p-button>
+                <p-button icon="pi pi-trash" label="Excluir" styleClass="ui-button-danger" (click)="excluirRole(r)"></p-button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog header="{{ roleEditando ? 'Editar' : 'Adicionar' }} role" [(visible)]="displayModal" modal="modal"
+    showEffect="fade" [style]="{width: '500px'}" [resizable]="false" class="modal" *ngIf="form">
+    <form [formGroup]="form">
+        <div class="input-field">
+            <p>Descrição *</p>
+            <input formControlName="descRole" type="text" pInputText placeholder="Descrição da role">
+        </div>
+        <div class="input-field">
+            <p>Role *</p>
+            <input formControlName="role" type="text" pInputText placeholder="Nome da role">
+        </div>
+        <div class="input-field">
+            <p>Menus *</p>
+            <table>
+                <tr *ngFor="let m of menus; let i = index;">
+                    <td>
+                        <p-checkbox [value]="m.id" (onChange)="menuChanged(i, $event)" [label]="m.descricao" [formControl]="form.controls['menus']">
+                        </p-checkbox>
+                    </td>
+                    <td>
+                        <ng-container formArrayName="acessos">
+                            <div [formGroupName]="i">
+                                <p-dropdown [options]="opcoesAcesso" appendTo="body" placeholder="Tipo de acesso"
+                                    formControlName="acesso"></p-dropdown>
+                            </div>
+                        </ng-container>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+    <p-footer>
+        <button pButton icon="pi pi-times" (click)="displayModal=false" label="Cancelar"
+            class="ui-button-secondary"></button>
+        <button pButton icon="pi pi-check" [disabled]="!form.valid" (click)="inserirEditarRole()"
+            label="Confirmar"></button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog #cd icon="pi pi-exclamation-triangle">
+    <p-footer>
+        <p-button type="button" icon="pi pi-times" label="Cancelar" styleClass="ui-button-secondary"
+            (click)="cd.reject()"></p-button>
+        <p-button type="button" icon="pi pi-trash" label="Excluir" styleClass="ui-button-danger" (click)="cd.accept()">
+        </p-button>
+    </p-footer>
+</p-confirmDialog>
+
+<p-toast position="top-center"></p-toast>

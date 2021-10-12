@@ -1,0 +1,63 @@
+<div class="header-tabela">
+    <h1>Menus</h1>
+</div>
+
+<p-table [value]="menus" [autoLayout]="true">
+    <ng-template pTemplate="caption">
+        <div class="cadastro-menu-header">
+                <p-button label="Adicionar menu" (click)="abrirModalInsercao()"></p-button>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Descrição</th>
+            <th>Caminho</th>
+            <th>ordem</th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-m>
+        <tr>
+            <td>{{m.descricao}}</td>
+            <td>{{m.formulario}}</td>
+            <td>{{m.ordem}}</td>
+            <td class="cadastro-menu-funcoes">
+                <p-button icon="pi pi-pencil" label="Editar" (click)="abrirModalEdicao(m)"></p-button>
+                <p-button icon="pi pi-trash" label="Excluir" styleClass="ui-button-danger" (click)="excluirMenu(m)"></p-button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog header="{{ menuEditando ? 'Editar' : 'Adicionar' }} menu" [(visible)]="displayModal" modal="modal"
+    showEffect="fade" [style]="{width: '500px'}" [resizable]="false" class="modal" *ngIf="form">
+    <form [formGroup]="form">
+        <div class="input-field">
+            <p>Descricao *</p>
+            <input formControlName="descricao" type="text" pInputText placeholder="Descrição do menu">
+        </div>
+        <div class="input-field">
+            <p>Caminho *</p>
+            <input formControlName="formulario" type="text" pInputText placeholder="Caminho do menu">
+        </div>
+        <div class="input-field">
+            <p>Ordem *</p>
+            <input formControlName="ordem" type="number" pInputText placeholder="Posição do menu">
+        </div>
+    </form>
+    <p-footer>
+        <button pButton icon="pi pi-times" (click)="displayModal=false" label="Cancelar"
+            class="ui-button-secondary"></button>
+        <button pButton icon="pi pi-check" [disabled]="!form.valid" (click)="inserirEditarMenu()"
+            label="Confirmar"></button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog #cd icon="pi pi-exclamation-triangle">
+    <p-footer>
+        <p-button type="button" icon="pi pi-times" label="Cancelar" styleClass="ui-button-secondary" (click)="cd.reject()"></p-button>
+        <p-button type="button" icon="pi pi-trash" label="Excluir" styleClass="ui-button-danger" (click)="cd.accept()"></p-button>
+    </p-footer>
+</p-confirmDialog>
+
+<p-toast position="top-center"></p-toast>

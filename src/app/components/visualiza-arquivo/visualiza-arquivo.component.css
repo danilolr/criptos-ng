@@ -1,0 +1,35 @@
+::ng-deep .ui-dialog-content {
+    height: 100%;
+}
+
+iframe {
+    height: 100%;
+}
+
+.container-visualiza-arquivo {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.footer-visualiza-arquivo {
+    display: flex;
+    height: 10%;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.footer-visualiza-arquivo p-button:first-of-type {
+    margin-right: 8px !important;
+}
+
+.content-visuliza-arquivo img {
+    object-fit: contain;
+}
+
+.content-visuliza-arquivo {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
