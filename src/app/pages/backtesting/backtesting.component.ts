@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { GraphqlService } from 'src/app/services/graphql/graphql.service'
 import { createChart, CrosshairMode } from 'lightweight-charts'
 import * as util from "../../services/util"
@@ -16,8 +16,9 @@ export class BacktestingComponent implements OnInit {
   public resultado = []
   public cotacoes = []
   public indicadores = []
+  public rGeral: number
 
-  constructor(private graphqlService: GraphqlService, private route: ActivatedRoute) { }
+  constructor(private graphqlService: GraphqlService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     const idCotacaoHistorico = this.route.snapshot.params['idCotacaoHistorico']
@@ -79,11 +80,11 @@ export class BacktestingComponent implements OnInit {
     }
     this.buildChart(this.cotacoes, resp['operacoes'], this.indicadores)
     this.resultado = resp['resultado']
-    var rGeral = 0
+    this.rGeral = 0
     for (let r of this.resultado) {
-      rGeral += r.percResultado
+      this.rGeral += r.percResultado
     }
-    this.resultado.push({ percResultado: rGeral })
+    this.resultado.push({ percResultado: this.rGeral })
     this.processando = false
     document.getElementById('r').style.display = ''
   }
@@ -120,37 +121,6 @@ export class BacktestingComponent implements OnInit {
       },
     })
 
-    // var chart2 = createChart(document.getElementById("chat2"), {
-    //   width: 1500,
-    //   height: 100,
-    //   localization: {
-    //     timeFormatter: (dt) => {
-    //       return util.converteDataHoraParaString(new Date(dt * 1000))
-    //     }
-    //   },
-    //   layout: {
-    //     backgroundColor: '#FFFFFF',
-    //     textColor: 'rgba(255, 255, 255, 0.9)',
-    //   },
-    //   grid: {
-    //     vertLines: {
-    //       color: 'rgba(197, 203, 206, 0.5)',
-    //     },
-    //     horzLines: {
-    //       color: 'rgba(197, 203, 206, 0.5)',
-    //     },
-    //   },
-    //   crosshair: {
-    //     mode: CrosshairMode.Normal,
-    //   },
-    //   rightPriceScale: {
-    //     borderColor: 'rgba(197, 203, 206, 0.8)',
-    //   },
-    //   timeScale: {
-    //     borderColor: 'rgba(197, 203, 206, 0.8)',
-    //   },
-    // })
-
     var candleSeries = chart.addCandlestickSeries({
       upColor: 'rgba(0, 255, 0, 1)',
       downColor: 'rgba(255, 0, 0, 1)',
@@ -173,43 +143,9 @@ export class BacktestingComponent implements OnInit {
         const sd = this.criaLineSeries(cotacoes, indicador['valores'])
         lineSeries.setData(sd)
       } else {
-        // console.log("grafico2 " + indicador.grafico)
-        // lineSeries = chart.addLineSeries({
-        //   priceScaleId: 'X',
-        //   lineWidth: 2,
-        //   color: indicador.cor
-        // })
       }
 
     }
-
-
-
-    // const lineSeries = chart.addLineSeries({
-    //   lineWidth: 2
-    // });
-    // const sd = this.criaLineSeries(cotacoes, 0)
-    // lineSeries.setData(sd)
-
-
-    // const hSeries = chart.addHistogramSeries({
-    //   color: "#26a69a",
-    //   priceFormat: {
-    //     type: "percent"
-    //   },
-
-    //   priceScaleId: '',
-    //   scaleMargins: {
-    //     top: 0.9,
-    //     bottom: 0
-    //   }
-    // })
-    // const hd = this.criaHSeries(cotacoes)
-    // hSeries.setData(hd)
-
-    // const areaSeries = chart.addAreaSeries()
-    // const ad = this.criaAreaSeries(cotacoes)
-    // areaSeries.setData(ad)
 
     var markers = []
 
@@ -257,5 +193,10 @@ export class BacktestingComponent implements OnInit {
     }
     return r
   }
+
+  voltar() {
+    this.router.navigate([`/app/cadastro-cotacao-historico`])
+  }
+
 
 }

@@ -36,17 +36,18 @@ export class CadastroCotacaoHistoricoComponent implements OnInit {
   }
 
   async executarBacktest(h: CotacaoHistorico) {
-    const es = []
-    const e = await this.graphqlService.query<any[]>(`
+    this.estrategias = await this.graphqlService.query<any[]>(`
     {
-      listaEstrategia  
-    }    
-    `, null)
-    for (let estrategia of e) {
-      es.push({ nome: estrategia })
-    }
-    this.estrategiaSelecionada = es[0]
-    this.estrategias = es
+      listaEstrategia {
+        nome
+        parametros {
+          nome
+          tipo
+          valorDefault
+        }    
+      }
+    }`, null)
+    this.estrategiaSelecionada = this.estrategias[0]
     this.displayModal = true
     this.idCotacaoHistorico = h.id
   }
