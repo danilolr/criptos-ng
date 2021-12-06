@@ -111,7 +111,7 @@ export class IndicatorBandaBollinger extends Indicator {
 
 export class IndicatorSimple extends Indicator {
 
-    constructor(descricao: string, public color: string, private values: (number | null)[]) {
+    constructor(descricao: string, public color: string, private values: number[]) {
         super(descricao)
     }
 
@@ -150,7 +150,7 @@ export class IndicatorVolume extends Indicator {
         for (const valor of this.values) {
             const yValor = region.calculateY(valor)
             ctx.fillStyle = "#000000"
-            ctx.fillRect(n * chart.candleWidth + chart.dx, yValor + region.deltaY, chart.candleWidth / 2, 10)
+            ctx.fillRect(n * chart.candleWidth + chart.dx, yValor + region.deltaY, chart.candleWidth / 2, region.height - yValor)
             n++
         }
     }

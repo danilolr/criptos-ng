@@ -5,6 +5,7 @@ export class Region {
 
     public offsetX: number = 200;
     public offsetY: number = 30;
+    limitHandler: (() => { min: number; max: number; }) | null = null;
 
     constructor(private chart: TsChart, public height: number, public width: number, public deltaY: number) { }
 
@@ -28,7 +29,7 @@ export class Region {
     }
 
     calculatePrice(y: number) {
-        var valor = this.height - y
+        var valor = this.height - (y - this.deltaY)
         valor = valor / this.height
         valor = valor * (this.chart.maxYValue - this.chart.minYValue)
         valor = valor + this.chart.minYValue

@@ -6,6 +6,9 @@ import * as util from "../../services/util"
 import { CotacaoHistoricoValor } from 'src/app/services/graphql/graphql-base'
 import { TsChart } from "../../tschart/tschat"
 import { CandleDrawer, CrossDrawer } from 'src/app/tschart/drawers/drawer'
+import { LimitDrawer } from 'src/app/tschart/drawers/limit_drawer'
+import { InfoDrawer } from 'src/app/tschart/drawers/info_drawer'
+import { DateDrawer } from 'src/app/tschart/drawers/date_drawer'
 import { IndicatorBandaBollinger, IndicatorSimple } from 'src/app/tschart/indicators/indicator'
 
 @Component({
@@ -56,7 +59,11 @@ export class BacktestingComponent implements OnInit {
         indicadores {
           descricao
           cor
-          valores
+          tipoIndicador
+          series {
+            nome
+            valores
+          }
           grafico
         }    
         cotacoes {
@@ -77,11 +84,11 @@ export class BacktestingComponent implements OnInit {
     for (let c of this.cotacoes) {
       c.indicador = []
       for (let i of this.indicadores) {
-        c.indicador.push(i['valores'][p])
+        // c.indicador.push(i['valores'][p])
       }
       p++
     }
-    this.buildChart(this.cotacoes, resp['operacoes'], this.indicadores)
+    //    this.buildChart(this.cotacoes, resp['operacoes'], this.indicadores)
     this.buildChartTs(this.cotacoes, resp['operacoes'], this.indicadores)
     this.resultado = resp['resultado']
     this.rGeral = 0
@@ -95,28 +102,52 @@ export class BacktestingComponent implements OnInit {
 
   buildChartTs(cotacoes, operacoes, indicadores) {
     const canvas = document.getElementById("tschat") as HTMLCanvasElement
+    canvas.width = 1500
+    canvas.height = 850
     var chat = new TsChart(canvas)
 
     chat.setCandles(cotacoes)
 
     const cr = chat.addRegion(0)
-    const er = chat.addRegion(100)
+    cr.addDrawer(new InfoDrawer(null))
 
     for (var indicador of indicadores) {
       console.log(indicador)
 
-      if (indicador.descricao.startsWith('MMS')) {
-        cr.addDrawer(new IndicatorSimple(indicador.descricao, indicador.cor, indicador.valores[0]))
+      if (indicador.tipoIndicador == 'MMS') {
+        cr.addDrawer(new IndicatorSimple(indicador.descricao, indicador.cor, indicador.series[0].valores))
+
       }
-      if (indicador.descricao.startsWith('BB')) {
-        cr.addDrawer(new IndicatorBandaBollinger("V", "#000000", "#EEEEEE", indicador.valores as number[][]))
+      if (indicador.tipoIndicador == 'BB') {
+        cr.addDrawer(new IndicatorBandaBollinger("V", "#000000", "#EEEEEE", [indicador.series[0].valores, indicador.series[1].valores, indicador.series[2].valores]))
+
       }
-      if (indicador.descricao.startsWith('RSI')) {
-        er.addDrawer(new IndicatorSimple(indicador.descricao, indicador.cor, indicador.valores[0]))
+      if (indicador.tipoIndicador == 'RSI') {
+        const er = chat.addRegion(100)
+        er.setLimitHandler(function () {
+          return { min: 0, max: 100 }
+        })
+        er.addDrawer(new InfoDrawer(null))
+        er.addDrawer(new LimitDrawer(30, 70, "#FFDBE9"))
+        er.addDrawer(new IndicatorSimple(indicador.descricao, indicador.cor, indicador.series[0].valores))
       }
     }
     cr.addDrawer(new CandleDrawer())
     cr.addDrawer(new CrossDrawer())
+
+    const date = chat.addRegion(20)
+    date.addDrawer(new DateDrawer())
+
+    var markers = []
+
+    for (var operacao of operacoes) {
+      if (operacao.tipo == "COMPRA") {
+        markers.push({ time: util.converteStringParaUnixTimestamp(operacao.dataHora), position: 'belowBar', color: '#2196F3', shape: 'arrowUp', text: 'C @ ' + operacao.valor })
+      } else {
+        markers.push({ time: util.converteStringParaUnixTimestamp(operacao.dataHora), position: 'aboveBar', color: '#e91e63', shape: 'arrowDown', text: 'V @ ' + operacao.valor })
+      }
+    }
+
 
     chat.run()
   }

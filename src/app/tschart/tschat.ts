@@ -13,7 +13,7 @@ export class TsChart {
     public dx: number = 0
     private isDragging: boolean = false
     private regions: Region[] = []
-    public candleWidth: number = 20
+    public candleWidth: number = 14
     private regionBuilders: RegionBuilder[] = []
     public candles: CandleInfo[] = []
     public minYValue: number = 1e10
@@ -21,8 +21,6 @@ export class TsChart {
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas
-        this.canvas.width = 1500
-        this.canvas.height = 800
         this.ctx = this.canvas.getContext("2d")
         th = this
     }
@@ -107,7 +105,8 @@ export class TsChart {
         ctx.fillStyle = "#FFFFFF"
         ctx.fillRect(0, 0, th.canvas.width, th.canvas.height)
         for (var region of this.regions) {
-            this.findLimits()
+
+            this.findLimits(region)
             for (var i of region.drawers) {
                 if (i instanceof Indicator) {
                     const limits = (i as Indicator).findLimits(this)
@@ -127,10 +126,22 @@ export class TsChart {
             ctx.clip()
             region.draw(ctx, this.dx, this.candleWidth, this.mouseX, this.mouseY)
             ctx.restore()
+            ctx.beginPath()
+            ctx.strokeStyle = "#000000"
+            ctx.lineWidth = 1;
+            ctx.rect(0, region.deltaY, region.width, region.height)
+            ctx.stroke()
+            ctx.closePath()
         }
     }
 
-    findLimits() {
+    findLimits(region: Region) {
+        if (region.limitHandler) {
+            const limit = region.limitHandler()
+            this.maxYValue = limit.max
+            this.minYValue = limit.min
+            return
+        }
         var n = 0
         this.minYValue = 1e10
         this.maxYValue = -1e10
@@ -163,14 +174,21 @@ class RegionBuilder {
 
     public drawers: Drawer[] = []
 
+    private callback: (() => any) | null = null
+
     constructor(public height: number) { }
 
     addDrawer(drawer: Drawer): void {
         this.drawers.push(drawer)
     }
 
+    setLimitHandler(callback: () => { min: number; max: number }) {
+        this.callback = callback
+    }
+
     public build(chart: TsChart, width: number, deltaY: number): Region {
         const r = new Region(chart, this.height, width, deltaY)
+        r.limitHandler = this.callback
         for (var drawer of this.drawers) {
             r.addDrawer(drawer)
         }
@@ -179,7 +197,7 @@ class RegionBuilder {
 
 }
 
-interface CandleInfo {
+export interface CandleInfo {
 
     dataHora: string
     open: number
