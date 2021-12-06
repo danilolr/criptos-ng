@@ -4,6 +4,9 @@ import { GraphqlService } from 'src/app/services/graphql/graphql.service'
 import { createChart, CrosshairMode } from 'lightweight-charts'
 import * as util from "../../services/util"
 import { CotacaoHistoricoValor } from 'src/app/services/graphql/graphql-base'
+import { TsChart } from "../../tschart/tschat"
+import { CandleDrawer, CrossDrawer } from 'src/app/tschart/drawers/drawer'
+import { IndicatorBandaBollinger, IndicatorSimple } from 'src/app/tschart/indicators/indicator'
 
 @Component({
   selector: 'app-backtesting',
@@ -79,6 +82,7 @@ export class BacktestingComponent implements OnInit {
       p++
     }
     this.buildChart(this.cotacoes, resp['operacoes'], this.indicadores)
+    this.buildChartTs(this.cotacoes, resp['operacoes'], this.indicadores)
     this.resultado = resp['resultado']
     this.rGeral = 0
     for (let r of this.resultado) {
@@ -87,6 +91,34 @@ export class BacktestingComponent implements OnInit {
     this.resultado.push({ percResultado: this.rGeral })
     this.processando = false
     document.getElementById('r').style.display = ''
+  }
+
+  buildChartTs(cotacoes, operacoes, indicadores) {
+    const canvas = document.getElementById("tschat") as HTMLCanvasElement
+    var chat = new TsChart(canvas)
+
+    chat.setCandles(cotacoes)
+
+    const cr = chat.addRegion(0)
+    const er = chat.addRegion(100)
+
+    for (var indicador of indicadores) {
+      console.log(indicador)
+
+      if (indicador.descricao.startsWith('MMS')) {
+        cr.addDrawer(new IndicatorSimple(indicador.descricao, indicador.cor, indicador.valores[0]))
+      }
+      if (indicador.descricao.startsWith('BB')) {
+        cr.addDrawer(new IndicatorBandaBollinger("V", "#000000", "#EEEEEE", indicador.valores as number[][]))
+      }
+      if (indicador.descricao.startsWith('RSI')) {
+        er.addDrawer(new IndicatorSimple(indicador.descricao, indicador.cor, indicador.valores[0]))
+      }
+    }
+    cr.addDrawer(new CandleDrawer())
+    cr.addDrawer(new CrossDrawer())
+
+    chat.run()
   }
 
   buildChart(cotacoes, operacoes, indicadores) {
