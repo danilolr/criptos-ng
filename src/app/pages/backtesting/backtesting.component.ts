@@ -9,7 +9,9 @@ import { CandleDrawer, CrossDrawer } from 'src/app/tschart/drawers/drawer'
 import { LimitDrawer } from 'src/app/tschart/drawers/limit_drawer'
 import { InfoDrawer } from 'src/app/tschart/drawers/info_drawer'
 import { DateDrawer } from 'src/app/tschart/drawers/date_drawer'
+import { MarkerDrawer } from 'src/app/tschart/drawers/marker_drawer'
 import { IndicatorBandaBollinger, IndicatorSimple } from 'src/app/tschart/indicators/indicator'
+import { Marker } from 'src/app/tschart/markers'
 
 @Component({
   selector: 'app-backtesting',
@@ -138,16 +140,17 @@ export class BacktestingComponent implements OnInit {
     const date = chat.addRegion(20)
     date.addDrawer(new DateDrawer())
 
-    var markers = []
+    var markers: Marker[] = []
 
     for (var operacao of operacoes) {
       if (operacao.tipo == "COMPRA") {
-        markers.push({ time: util.converteStringParaUnixTimestamp(operacao.dataHora), position: 'belowBar', color: '#2196F3', shape: 'arrowUp', text: 'C @ ' + operacao.valor })
+        markers.push({ time: operacao.dataHora, position: 'BELOW', color: '#2196F3', text: 'C @ ' + operacao.valor })
       } else {
-        markers.push({ time: util.converteStringParaUnixTimestamp(operacao.dataHora), position: 'aboveBar', color: '#e91e63', shape: 'arrowDown', text: 'V @ ' + operacao.valor })
+        markers.push({ time: operacao.dataHora, position: 'ABOVE', color: '#e91e63', text: 'V @ ' + operacao.valor })
       }
     }
 
+    cr.addDrawer(new MarkerDrawer(markers))
 
     chat.run()
   }

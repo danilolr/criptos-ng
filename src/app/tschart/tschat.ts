@@ -35,6 +35,17 @@ export class TsChart {
         return rb
     }
 
+    findCandlePosition(position: string) {
+        var n = 0
+        for (var candle of this.candles) {
+            if (candle.dataHora == position) {
+                return n
+            }
+            n++
+        }
+        return null
+    }
+
     mouseDown(event: MouseEvent): void {
         th.mouseX = event.offsetX
         th.mouseY = event.offsetY
