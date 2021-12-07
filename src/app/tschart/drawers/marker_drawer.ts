@@ -11,10 +11,24 @@ export class MarkerDrawer implements Drawer {
         for (var marker of this.markers) {
             const candlePositon = chart.findCandlePosition(marker.time)
             if (candlePositon) {
+                const tw = ctx.measureText(marker.text).width
+                var candle = chart.candles[candlePositon]
+                var py = 0
+                if (marker.position == "ABOVE") {
+                    py = region.calculateY(candle.high) - 40
+
+                } else {
+                    py = region.calculateY(candle.low) + 20
+                }
+
                 ctx.beginPath()
-                ctx.fillStyle = "#FF00FF"
-                ctx.fillRect(candlePositon * chart.candleWidth + chart.dx, 50, chart.candleWidth, 20)
+                ctx.fillStyle = marker.color
+                ctx.fillRect(candlePositon * chart.candleWidth + chart.dx - tw / 2 - chart.candleWidth / 2, py, tw + 30, 20)
                 ctx.closePath();
+                ctx.font = '16px serif'
+                ctx.fillStyle = "#FFFFFF"
+                ctx.fillText(`${marker.text}`, candlePositon * chart.candleWidth + chart.dx - tw / 2 - chart.candleWidth / 2 + 1, py + 14)
+
             }
         }
     }
